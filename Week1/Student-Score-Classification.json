@@ -1,0 +1,158 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eff8c1a5-3fc1-4220-a074-d8d639856251",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/work/petalnex internship/Week 1/Student-Records.xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e98d9c13-3b68-4709-91d8-c258668b4edf",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "baadb8c1-0f54-4554-b215-2e6eef45a97d",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nfor (const item of $input.all()) {\n  if(item.json.Score >= 80 ){\n    item.json.Classification = \"Excellent\";\n  }else if(item.json.Score >= 60){\n    item.json.Classification = \"Good\";\n  }else {\n    item.json.Classification = \"Needs Improvement\"\n  }\n}\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "2bdc19ef-d812-422c-bca5-c87302a13975",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "84387cba-34ba-4848-aef6-2047b98d6661",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/work/petalnex internship/Week 1/Student-Records.xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "e41f23ce-8f8b-4621-9954-5611a735b2cb",
+      "name": "Read/Write Files from Disk1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "18d23281-036e-49dc-9271-45a8cbc701ca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "QN13nzFcVPzXdbTp",
+  "tags": []
+}
