@@ -1,0 +1,505 @@
+{
+  "name": "Internship_Screening",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y081_0PEubgXNmYDImD20EzQw4Ne2IqvRxqBZNrxmXE",
+          "mode": "list",
+          "cachedResultName": "internship_applications",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y081_0PEubgXNmYDImD20EzQw4Ne2IqvRxqBZNrxmXE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 213736560,
+          "mode": "list",
+          "cachedResultName": "Applications",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y081_0PEubgXNmYDImD20EzQw4Ne2IqvRxqBZNrxmXE/edit#gid=213736560"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        160
+      ],
+      "id": "19185dea-4f5d-45d0-a597-9d4c2ceefd67",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jirdYCRqpcDaZYae",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        160
+      ],
+      "id": "98416ecc-f423-4649-8cc4-aebe30fbf2f9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8a72b033-efc1-463b-b0e3-dfb015c613f0",
+              "leftValue": "={{ $json.Semester }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "6e473814-adba-47aa-a97a-e13e4f132912",
+              "leftValue": "={{ $json.Semester }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            },
+            {
+              "id": "59c1dcbc-df64-4175-8f69-939a21f06b54",
+              "leftValue": "={{ $json['CGPA'] }}",
+              "rightValue": 2.7,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "b1010375-bbb7-4ef8-921d-385575e90c60",
+              "leftValue": "={{ $json['CGPA'] }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        160
+      ],
+      "id": "d6389175-89f7-4f6a-a570-a9f85c742cb2",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  delete item.json.row_number;\n  delete item.json.skillmatch;\n  item.json.Category = \"Rejected\";\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        256
+      ],
+      "id": "056d7cb4-0f70-4f9a-a0da-943c6f8e8de3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "content": "Eligibility Criteria:\n-CGPA>=2.7\n-Semester>=5\nShortlist Criteria:\n-CGPA>=3 + 3<= relevant skills\nConsideration Criteria:\n-2 relevant skills",
+        "height": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -80,
+        -560
+      ],
+      "typeVersion": 1,
+      "id": "0096c92c-de49-4fa5-98c9-405b6a57eee4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const req_skills = [\"Java\", \"Python\", \"Git\", \"C++\",\"Go\", \"AWS\"];\n  const cand_skill = item.json.Skills.split(\",\").map(skill => skill.trim());\n  const match = cand_skill.filter(skill => req_skills.includes(skill));\n  item.json.skillmatch = match.length;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        64
+      ],
+      "id": "4773a3a6-f2d9-43fd-9084-1bb895d21d66",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{ ($json.CGPA >= 3 && $json.skillmatch >= 3) ? 0 : ($json.skillmatch >= 2) ? 1 : 2 }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        48
+      ],
+      "id": "7bd3425b-4f99-4616-985a-69fb5d8f95d9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  delete item.json.row_number;\n  delete item.json.skillmatch;\n  item.json.Category = \"Shortlisted\";\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -128
+      ],
+      "id": "0297eda6-e624-4eca-9394-bf7646ea5038",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  delete item.json.row_number;\n  delete item.json.skillmatch;\n  item.json.Category = \"Review Required\";\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        64
+      ],
+      "id": "15a57b15-b018-4417-8d79-119f5ac8185c",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1120,
+        256
+      ],
+      "id": "b943d7b4-25ef-4017-9f71-663ccce40d78",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1536,
+        32
+      ],
+      "id": "e9f48b94-86bd-49d7-b9c3-cc6874a11ce3",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ptzvTV69gtY-QJ1OWFce7OkzZPdwNi21aBxLsYbi3jk",
+          "mode": "list",
+          "cachedResultName": "internship_screened_application",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ptzvTV69gtY-QJ1OWFce7OkzZPdwNi21aBxLsYbi3jk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ptzvTV69gtY-QJ1OWFce7OkzZPdwNi21aBxLsYbi3jk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Semester",
+              "displayName": "Semester",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CGPA",
+              "displayName": "CGPA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skillmatch",
+              "displayName": "skillmatch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        32
+      ],
+      "id": "d1c54343-ddc7-42a3-ab8c-b3f8cb5b9ae9",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jirdYCRqpcDaZYae",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Update on your application: Internship at Petalnex",
+        "emailType": "text",
+        "message": "=Dear {{ $json.Name }},\n\nThank you for applying to join the team at Petalnex. We are excited to let you know that your application stood out, and you have been shortlisted for the next stage of our selection process!\n\nYou will be contacted within a week with details regarding your HR Interview.\n\nCongratulations again on making it to this stage. We are looking forward to speaking with you!\n\nBest regards,\n\nSyed Ghazi Abbas\nIntern\nPetalnex Pvt. Ltd.\npetalnex.com",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        -208
+      ],
+      "id": "2bff087b-62d3-4087-9fb3-5dab6695725b",
+      "name": "Send a message",
+      "webhookId": "fae47ceb-5a93-4eaa-bdca-0bb8a9dcf8b2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WNL1AThtOn9vAkRR",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "23e10ac9-fe2a-48b5-ae4f-762a1ceab6ef",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "MYkVwlV4cA5FIgVZ",
+  "tags": []
+}
