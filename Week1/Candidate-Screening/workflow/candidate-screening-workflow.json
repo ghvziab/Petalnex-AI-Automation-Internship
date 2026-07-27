@@ -1,0 +1,457 @@
+{
+  "name": "Candidate_Screening",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        96
+      ],
+      "id": "fdab3404-20bc-4ce2-872e-f35d1f7e5793",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1DQ0kSNWGcTC2WFsWKI6DzsxXOtQHemcyJZpBvQJ-MUU",
+          "mode": "list",
+          "cachedResultName": "candidate_screening_dataset",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DQ0kSNWGcTC2WFsWKI6DzsxXOtQHemcyJZpBvQJ-MUU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 457720030,
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DQ0kSNWGcTC2WFsWKI6DzsxXOtQHemcyJZpBvQJ-MUU/edit#gid=457720030"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        96
+      ],
+      "id": "a557de81-c141-48c7-8480-3b32b5aff3a1",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jirdYCRqpcDaZYae",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const req_exp = 3.0;\nconst req_skill = [\"Python\", \"TensorFlow\", \"PyTorch\"]; \nconst req_deg = [\"MS Artificial Intelligence\", \"BS Data Science\", \"MS Software Engineering\"];\n\nfor (const item of $input.all()) {\n    let candidate = item.json;\n    \n    candidate.Status = \"Rejected\"; \n    let cand_skill = [];\n    cand_skill = candidate.Skills.split(',').map(skill => skill.trim());\n    \n    let skill_match = req_skill.filter(skill => cand_skill.includes(skill)).length;\n    \n    if (candidate.Experience >= req_exp && req_deg.includes(candidate.Degree) && skill_match >= 2) {\n        candidate.Status = \"Shortlisted\";\n    } \n    else if (skill_match >= 1 && candidate.Experience >= 0) {\n        candidate.Status = \"Review Required\";\n    }\n  delete candidate.row_number;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        96
+      ],
+      "id": "c3365a6a-2ce2-4e24-a3d6-4bb7a1811a96",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1DQ0kSNWGcTC2WFsWKI6DzsxXOtQHemcyJZpBvQJ-MUU",
+          "mode": "list",
+          "cachedResultName": "candidate_screening_dataset",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DQ0kSNWGcTC2WFsWKI6DzsxXOtQHemcyJZpBvQJ-MUU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 724815144,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DQ0kSNWGcTC2WFsWKI6DzsxXOtQHemcyJZpBvQJ-MUU/edit#gid=724815144"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Email": "={{ $json.Email }}",
+            "Degree": "={{ $json.Degree }}",
+            "Skills": "={{ $json.Skills }}",
+            "Experience": "={{ $json.Experience }}",
+            "Availability": "={{ $json.Availability }}",
+            "Status": "={{ $json.status }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Degree",
+              "displayName": "Degree",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Availability",
+              "displayName": "Availability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "303aca81-6f53-4285-ab10-a50f361f54f0",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jirdYCRqpcDaZYae",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "75bc3566-5c74-4468-83e1-d74fbb8ef1a6",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "faedbd4b-de50-4402-bccc-cadf3b3bee14",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "22af2471-1e5f-4820-9743-af84542c9db9",
+              "leftValue": "={{ $json.Degree }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "45c34554-782d-4c28-81a4-cb14439aa408",
+              "leftValue": "={{ $json.Skills }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "edd1d697-1722-46d2-a7fa-b88abd8b7957",
+              "leftValue": "={{ $json.Experience }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "8c66341b-8fb3-4927-a6bf-74e6ba568432",
+              "leftValue": "={{ $json.Availability }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        96
+      ],
+      "id": "3661950e-a693-4e02-ad94-4883ce31355c",
+      "name": "Data Validation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0de8ce9c-8747-4c36-b27f-df819adbbae7",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Review Required",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "2e1856cf-e648-4ba8-8084-2ebe619f13a8",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Shortlisted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        96
+      ],
+      "id": "fe122960-92a1-49dc-a934-fef89725acf7",
+      "name": "Rejection filtering"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "76477861-092d-4a59-b108-bfd8592d8bb6",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "=Shortlisted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        192
+      ],
+      "id": "2e768801-7e5f-4aa0-a145-673ef13f9171",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Update on Application for Role XYZ",
+        "emailType": "text",
+        "message": "=Dear {{ $json.Name }},  \nThank you for applying to join the team at Petalnex. We are excited to let you know that your application for Role XYZ stood out, and you have been shortlisted for the next stage of our selection process!  You will be contacted within a week with details regarding your HR Interview.  \nCongratulations again on making it to this stage. We are looking forward to speaking with you!  \nBest regards,  \nSyed Ghazi Abbas \nIntern \nPetalnex Pvt. Ltd. \npetalnex.com",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        192
+      ],
+      "id": "a67a3548-f58b-4c56-ae20-c38deb1a01eb",
+      "name": "Send a message",
+      "webhookId": "83dcf077-5a7e-4ec2-913a-ca2b9c7433b0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WNL1AThtOn9vAkRR",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Data Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Rejection filtering",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Validation": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rejection filtering": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "122c6a0b-4341-481a-8826-10d727e3d83b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "lle7GAOJ0boKfDzF",
+  "tags": []
+}
