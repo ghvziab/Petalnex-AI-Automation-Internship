@@ -1,0 +1,139 @@
+{
+  "name": "Umbrella-Reminder-Discord",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        -224
+      ],
+      "id": "217013f5-3fd0-40c8-9102-b92c26b80b25",
+      "name": "Schedule Trigger",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=24.9056&longitude=-67.0822&daily=precipitation_probability_max&timezone=auto&forecast_days=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -144,
+        -224
+      ],
+      "id": "ad867caf-0055-4a50-9991-5f6b3264d126",
+      "name": "OpenMeteo HTTP Request GET"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": \"**Rain Check ** ({{ $json.daily.time[0] }})\\n**Precipitation:** {{ $json.daily.precipitation_probability_max[0] }}% Dont forget to carry an umbrella!!\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        320,
+        -368
+      ],
+      "id": "f0cc21cc-62c3-44ed-a34c-d072162e1180",
+      "name": "Discord HTTP Request POST"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8a4f8899-51b7-43d1-a2f5-86a33d48b253",
+              "leftValue": "={{ $json.daily.precipitation_probability_max[0] }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        -224
+      ],
+      "id": "f70e1d8f-adb1-4854-969d-583dad5264a1",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenMeteo HTTP Request GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenMeteo HTTP Request GET": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Discord HTTP Request POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4fc08055-9504-4601-b273-8736a8cca6cf",
+  "meta": {
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "dL7Sf9xHmi9ZdZci",
+  "tags": []
+}
