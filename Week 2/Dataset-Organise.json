@@ -1,0 +1,155 @@
+{
+  "name": "Dataset-Organise",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dad4a31a-78d7-4c2e-9ab8-3d32967b2d8b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/work/petalnex internship/week 2/student_records_inconsistent.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "da16d646-6092-4e58-8695-c6ffd45db928",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "b6c33592-8f5e-4113-8e1a-9d6f04eba6e8",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "function titlecase (name){\n  return name.toLowerCase().replace(/\\b\\w/g, char => char.toUpperCase())\n}\nfor (const item of $input.all()) {\n  let cand = item.json;\n  cand.Name = titlecase(cand.Name);\n  cand.Email = cand.Email.toLowerCase();\n  cand.Grade = \"\";\n}\nreturn $input.all().map(item => {\n  let cand = item.json;\n  if(Number(cand.Score) >= 90){cand.Grade = \"A\"}\n  else if(Number(cand.Score) >= 80){cand.Grade = \"B\"}\n  else if(Number(cand.Score) >= 70){cand.Grade = \"C\"}\n  else if(Number(cand.Score) >= 60){cand.Grade = \"D\"}\n  else{cand.Grade = \"F\"}\n  return item;\n} ).filter(item => {return item.json.Grade <= \"B\"});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "e90ded1e-5c21-4b27-8ae1-b747f1479f92",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        0
+      ],
+      "id": "3b167c78-157f-4781-8310-526b14272cc2",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/work/petalnex internship/week 2/student_records_cleaned.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "9a45aef1-6c72-4999-aa94-989b19187738",
+      "name": "Read/Write Files from Disk1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "19680830-7f65-4df3-971a-6fc8e1efc9c6",
+  "meta": {
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "mWLzQqa1rQadLUJD",
+  "tags": []
+}
