@@ -1,0 +1,220 @@
+{
+  "name": "Order-Record",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "331719c5-96f3-4345-ba71-97d32bdfaaed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c9b01542-0a53-42fe-8600-39901bd1d3ae",
+      "name": "Webhook",
+      "webhookId": "331719c5-96f3-4345-ba71-97d32bdfaaed"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "749195fc-4256-4f10-aae1-18d3c87ab044",
+              "leftValue": "={{ $json.body.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "86981a3c-5a1b-4566-8b07-2258ef2312a9",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "393f3e47-d852-404b-b367-f31bf94ea363",
+              "leftValue": "={{ $json.body.order-id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d037b666-f81c-4a68-a970-12aa76349037",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1zpb5BTwbtPTVEJNdXvAnq771fAMV3I0nyLa7abAUe5E",
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zpb5BTwbtPTVEJNdXvAnq771fAMV3I0nyLa7abAUe5E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zpb5BTwbtPTVEJNdXvAnq771fAMV3I0nyLa7abAUe5E/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "NAME": "={{ $json.body.name }}",
+            "EMAIL": "={{ $json.body.email }}",
+            "ORDER ID": "={{ $json.body[\"order-id\"] }}"
+          },
+          "matchingColumns": [
+            "ORDER ID"
+          ],
+          "schema": [
+            {
+              "id": "NAME",
+              "displayName": "NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "EMAIL",
+              "displayName": "EMAIL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ORDER ID",
+              "displayName": "ORDER ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        -16
+      ],
+      "id": "4b8a6772-4971-4f25-8437-1563a6c436a9",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jirdYCRqpcDaZYae",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.email }}",
+        "subject": "Order Confirmation",
+        "emailType": "text",
+        "message": "=Dear Customer,\n\nYour order {{ $json.body[\"order-id\"] }} has been confirmed.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        -208
+      ],
+      "id": "e4371ae7-bec4-4a85-ab2c-70c86f7a2a8b",
+      "name": "Send a message",
+      "webhookId": "26f12f0c-ff1a-4dab-8f2a-4dbeedea3728",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WNL1AThtOn9vAkRR",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "42be7c13-38e5-4443-b907-1f90b7086177",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "3hzC4tUYIbJXlHE5",
+  "tags": []
+}
