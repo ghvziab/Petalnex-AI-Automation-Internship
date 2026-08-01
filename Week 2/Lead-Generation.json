@@ -1,0 +1,303 @@
+{
+  "name": "Lead-Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a09eb985-255b-4ee6-ab50-dc11c7d93d53",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -16
+      ],
+      "id": "5fae7395-c1b8-4158-9f8e-e271e4ab4118",
+      "name": "Webhook",
+      "webhookId": "a09eb985-255b-4ee6-ab50-dc11c7d93d53"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c493306c-7b20-4bfb-a825-36b2d2ad4d03",
+              "leftValue": "={{ $json.body.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "71a95f61-9052-4eef-b1a1-249d07a01617",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "bf527ebb-d315-449e-ba4a-2cff58f7a867",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "email",
+        "operation": "emailEnrichment",
+        "email": "={{ $json.body.email }}"
+      },
+      "type": "n8n-nodes-tomba.tomba",
+      "typeVersion": 1,
+      "position": [
+        464,
+        -32
+      ],
+      "id": "82b162f4-ca85-4bf8-8e60-a554871f4101",
+      "name": "Look up person and company data based on an email",
+      "credentials": {
+        "tombaApi": {
+          "id": "stLqzUr7w0JqUswW",
+          "name": "Tomba account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1dVZikht0QqIL3GA0lwcKCPB9EZpdSxmH8V68Rx6llec",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dVZikht0QqIL3GA0lwcKCPB9EZpdSxmH8V68Rx6llec/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "XYZ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dVZikht0QqIL3GA0lwcKCPB9EZpdSxmH8V68Rx6llec/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "EMAIL": "={{ $json.email }}",
+            "FIRST NAME": "={{ $json.first_name }}",
+            "LAST NAME": "={{ $json.last_name }}",
+            "COMPANY DOMAIN": "={{ $json.website_url }}",
+            "COMPANY NAME": "={{ $json.company }}",
+            "DEPARTMENT": "={{ $json.department }}",
+            "POSITION": "={{ $json.position }}",
+            "LINKEDIN": "={{ $json.linkedin }}"
+          },
+          "matchingColumns": [
+            "EMAIL"
+          ],
+          "schema": [
+            {
+              "id": "EMAIL",
+              "displayName": "EMAIL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FIRST NAME",
+              "displayName": "FIRST NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LAST NAME",
+              "displayName": "LAST NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "COMPANY NAME",
+              "displayName": "COMPANY NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "COMPANY DOMAIN",
+              "displayName": "COMPANY DOMAIN",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DEPARTMENT",
+              "displayName": "DEPARTMENT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "POSITION",
+              "displayName": "POSITION",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LINKEDIN",
+              "displayName": "LINKEDIN",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        -32
+      ],
+      "id": "c30a47f7-8bec-4c15-a070-2ee840dba808",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jirdYCRqpcDaZYae",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BMFP7TL3E",
+          "mode": "list",
+          "cachedResultName": "leads-updates"
+        },
+        "text": "=New Lead:\nName: {{ $json.full_name }}\nEmail: {{ $json.email }}\nLinkedin: {{ $json.linkedin }}\nCompany:{{ $json.company }}\nDepartment:{{ $json.department }}\nPosition:{{ $json.position }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        688,
+        -176
+      ],
+      "id": "78395796-eaa1-4050-b7fb-df29305ac334",
+      "name": "Send a message",
+      "webhookId": "adcd3da5-f5da-400e-a6b4-2d6990930690",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "r7O3QFbFklYaLXLz",
+          "name": "Slack account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Look up person and company data based on an email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Look up person and company data based on an email": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "56750675-1866-4f40-b545-a360f14c6ece",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae859ead1cd45add63d4aae494a58e954d0a0a3256de7117512dc72a809088e9"
+  },
+  "nodeGroups": [],
+  "id": "ZD0ohT99CkOuIn2s",
+  "tags": []
+}
