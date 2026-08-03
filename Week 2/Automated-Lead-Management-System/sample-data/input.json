@@ -1,0 +1,125 @@
+[
+  {
+    "name": "john doe",
+    "email": "john.doe@techcorp.com",
+    "company": "Tech Corp",
+    "service": "Web Development",
+    "budget": 15000
+  },
+  {
+    "name": "samantha smith",
+    "email": "sam.smith99@gmail.com",
+    "company": "",
+    "service": "SEO Optimization",
+    "budget": 800
+  },
+  {
+    "name": "michael scott",
+    "company": "Dunder Mifflin",
+    "service": "Consulting",
+    "budget": 5500
+  },
+  {
+    "email": "developer@startup.io",
+    "company": "Startup.io",
+    "service": "App Creation",
+    "budget": 12000
+  },
+  {
+    "name": "diana prince",
+    "email": "diana.prince@yahoo.com",
+    "service": "Security Auditing",
+    "budget": 1500
+  },
+  {
+    "name": "evan wright",
+    "email": "evan@growthmarketing.com",
+    "company": "Growth Marketing LLC",
+    "service": "Ad Campaigns",
+    "budget": 4500
+  },
+  {
+    "name": "fiona apple",
+    "email": "fiona_apple@hotmail.com",
+    "company": "",
+    "service": "Music Production",
+    "budget": 0
+  },
+  {
+    "name": "george costanza",
+    "email": "g.costanza@vandelay.com",
+    "company": "Vandelay Industries",
+    "service": "Import/Export",
+    "budget": 8500
+  },
+  {
+    "name": "hannah montana",
+    "email": "hannah@aol.com",
+    "company": null,
+    "service": "",
+    "budget": 500
+  },
+  {
+    "email": "lonely_user@proton.me",
+    "budget": 11000
+  },
+  {
+    "name": "iAN cuMMings",
+    "email": "ian@apple.com",
+    "company": "Apple",
+    "service": "Hardware Consulting",
+    "budget": 25000
+  },
+  {
+    "name": "jane austin",
+    "email": "jane.austin@icloud.com",
+    "company": "",
+    "service": "Copywriting",
+    "budget": 6000
+  },
+  {
+    "company": "Ghost Corporation",
+    "service": "Private Investigation",
+    "budget": 50000
+  },
+  {
+    "name": "kyle broflovski",
+    "email": "kyle@momandpop.net",
+    "company": "Mom & Pop Fixes",
+    "service": "IT Support",
+    "budget": 200
+  },
+  {
+    "name": "liam neeson",
+    "email": "liam123@live.com",
+    "company": "",
+    "service": "Video Editing",
+    "budget": 3500
+  },
+  {
+    "name": "mia wallace",
+    "email": "mia@miadesigns.co",
+    "company": null,
+    "service": "Rebranding",
+    "budget": 11000
+  },
+  {
+    "name": "noah ark",
+    "company": "Noah's Animals",
+    "service": "Pet Care",
+    "budget": 950
+  },
+  {
+    "name": "olivia benson",
+    "email": "olivia@enterprises.org",
+    "company": "Enterprises Org",
+    "budget": 8500
+  },
+  {
+    "name": "paul walker",
+    "email": "paul.walker@outlook.com",
+    "company": null,
+    "service": "Automotive Tuning",
+    "budget": 100000
+  }
+]
